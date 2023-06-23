@@ -9,15 +9,15 @@
             </div>
             <ul class="menu-items">
                 
-                <li><a href="#">Home</a></li>
+                <li><a href="{{ url_for('home_after_register') }}">Home</a></li>
                 <li><a href="{{ url_for('about_tool') }}">About</a></li>
                 
                 
-          
+
                 <li><a href="{{ url_for('contact') }}">Contact</a></li>
-                <li><a href="#image_test_parkinson" onclick="image_test()" >Image Test</a></li>
-                <li><a href="#voice_test_parkinson" onclick="voice_test()">voice Test</a></li>
-                <li><a href="#" >Sign out</a></li>
+                <li><a href="{{ url_for('profile') }}" >Profile</a></li>
+
+                <li><a href="/logoutt?token={{ usertoken }}">Sign out</a></li>
             </ul>
             <h1 class="logo">PDD</h1>
         </div>

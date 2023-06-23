@@ -26,14 +26,17 @@
 
 
 
+{% if auth ==False %}
+    {% extends 'Shared_part.html' %}
+{% elif auth == True %}
+    {% extends 'nav-after-register.html' %}
+{% endif %}
+
+{% block content %}
 
 
 
-  {%extends 'Shared_part.html'%}
 
-
-
-  {% block content %}
   
 
 

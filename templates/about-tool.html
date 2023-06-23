@@ -21,12 +21,14 @@
 </head>
 <body>
     
-  {%extends 'Shared_part.html'%}
 
+{% if auth ==False %}
+    {% extends 'Shared_part.html' %}
+{% elif auth == True %}
+    {% extends 'nav-after-register.html' %}
+{% endif %}
 
-
-  {% block content %}
-  
+{% block content %}
 
 <script>
 $(function(){

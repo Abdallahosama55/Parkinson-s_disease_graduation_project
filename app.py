@@ -5,20 +5,34 @@ from werkzeug.security import generate_password_hash, check_password_hash
 from flask_sqlalchemy import SQLAlchemy
 import jwt as pyjwt
 import datetime
-
+from keras.models import load_model
+from PIL import Image
+import numpy as np
 app = Flask(__name__)
-
-
+global auth
+auth=False
 @app.route('/')
 def home():
 
     return render_template('Home.html')
+
+
+@app.route('/home_after_register')
+def home_after_register():
+
+    return render_template('home-after-register.html')
+
+
+@app.route('/home_after_register_image')
+def home_after_register_image():
+
+    return render_template('nav-after-register.html')
 @app.route('/about-tool')
 def about_tool():
-    return render_template('about-tool.html')
-@app.route('/contact')
-def contact():
-    return render_template('contact.html')
+    return render_template('about-tool.html',auth=auth)
+@app.route('/profile')
+def profile():
+    return render_template('profile.html',auth=auth)
 
 api = Api(app)
 app.config['SECRET_KEY'] = 'thisissecret'
@@ -125,7 +139,9 @@ def register_user():
     }
     token = jwt.encode(payload, app.config['SECRET_KEY'], algorithm='HS256')
     decodedtoken = pyjwt.decode(token, app.config['SECRET_KEY'], algorithms=['HS256'])
-    return make_response(render_template('home-after-register.html'))
+    global auth
+    auth = True
+    return make_response(render_template('home-after-register.html',auth = True))
 #####################################REGISTERRRRRRRRR###############################################################################
 class Register(Resource):
     @marshal_with(user_resource_field)
@@ -175,6 +191,7 @@ def login_user():
     if not user or not check_password_hash(user.password, password):
         return 'Invalid login credentials'
 
+
     # generate a JWT token for the authenticated user
     payload = {
         'id': user.id,
@@ -196,7 +213,9 @@ def login_user():
 
     # return the token to the client
     decodedtoken = pyjwt.decode(usertoken, app.config['SECRET_KEY'], algorithms=['HS256'])
-    return make_response(render_template('home-after-register.html'))
+    global auth
+    auth = True
+    return make_response(render_template('home-after-register.html',auth = True))
 ####################################################################################################
 class Login(Resource):
     #   @marshal_with(token_resource_field)
@@ -255,7 +274,23 @@ class Logout(Resource):
         tokeninstance.isdeleted = True
         print("Token is deleted or not ", tokeninstance.isdeleted)
         return make_response(jsonify({'message ': 'Succesful logout'}))
+@app.route('/logoutt')
+def logoutt():
+    # get the token from the request headers or query parameters
+    giventoken = request.headers.get('Authorization') or request.args.get('token')
 
+    # find the token instance in the database and delete it
+    tokeninstance = Token.query.filter_by(token=giventoken).first()
+    if tokeninstance:
+        db.session.delete(tokeninstance)
+        db.session.commit()
+
+    # set the value of auth to False when the user logs out
+    global auth
+    auth = False
+
+    # return a response indicating that the logout was successful
+    return make_response(render_template('Home.html',auth = auth))
 
 # # For GET request to http://localhost:5000/
 class GetUser(Resource):
@@ -332,6 +367,9 @@ class UpdateUser(Resource):
 #         db.session.commit()
 #         return f'{id} is deleted', 200
 
+@app.route('/contact')
+def contact():
+    return render_template('contact.html',auth=auth)
 
 class DeleteToken(Resource):
     def delete(self, Token_id):
@@ -353,5 +391,63 @@ api.add_resource(Logout, '/logout')
 # api.add_resource(UpdateUser, '/update/<int:id>')
 api.add_resource(DeleteToken, '/delete/<int:Token_id>')
 
+#########################################Deployment#################################################################
+def preprossing(image):
+    image=Image.open(image)
+    image = image.resize((224, 224))
+    image_arr = np.array(image.convert('RGB'))
+    image_arr.shape = (1, 224, 224, 3)
+    return image_arr
+
+classes = ['Healthy','Parkinson']
+model=load_model("weights_best.hdf5")
+
+
+@app.route('/predictApi', methods=["POST"])
+def api():
+    # Get the image from post request
+    try:
+        if 'fileup' not in request.files:
+            return "Please try again. The Image doesn't exist"
+        image = request.files.get('fileup')
+        image_arr = preprossing(image)
+        print("Model predicting ...")
+        result = model.predict(image_arr)
+        print("Model predicted")
+        ind = np.argmax(result)
+        prediction = classes[ind]
+        print(prediction)
+        return jsonify({'prediction': prediction})
+    except:
+        return jsonify({'Error': 'Error occur'})
+
+import json
+from flask import jsonify
+@app.route('/')
+def index():
+
+    return render_template('home-after-register.html')
+@app.route('/predict', methods=['GET', 'POST'])
+def predict():
+    if request.method == 'POST':
+        try:
+            # Get the image from post request
+            image = request.files['fileup']
+            print("Image received:", image)
+            image_arr= preprossing(image)
+            print("Image preprocessed")
+            result = model.predict(image_arr)
+            print("Prediction result:", result)
+            ind = np.argmax(result)
+            prediction = classes[ind]
+            print("Prediction:", prediction)
+
+            # Return the prediction result as a JSON object
+            return jsonify({'prediction': prediction})
+        except Exception as e:
+            print("Error processing request:", e)
+            return "Error processing request: " + str(e), 500
+    else:
+        return render_template('home-after-register.html',appName="Parkinson Image Classification")
 if __name__ == '__main__':
     app.run(debug=True)
