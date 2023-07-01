@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>About service</title>
+    <link rel="stylesheet" href="/static/css/home.css">
+    <link rel="stylesheet" href="/static/css/about.css">
+    <link rel="stylesheet" href="/static/css/Signup.css">
+    <script src="/static/js/functions.js"></script>
+    <script src="https://code.jquery.com/jquery-1.10.2.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <script src="https://kit.fontawesome.com/a076d05399.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
+   <script src="/static/js/wow.min.js"></script>
+              <script>
+              new WOW().init();
+              </script>
+ 
+</head>
+<body>
+    
+
+{% if auth ==False %}
+    {% extends 'Shared_part.html' %}
+{% elif auth == True %}
+    {% extends 'nav-after-register.html' %}
+{% endif %}
+
+{% block content %}
+
+<script>
+$(function(){
+  $("#nav-placeholder").load("/templates/sharedSection/nav.html");
+});
+</script>
+<!--end of Navigation bar-->
+
+
+
+    
+<div class="about-section ">
+    <div class="container-about wow animate__animated animate__pulse" id="container-about">
+        
+<h1>About <span>tool</span></h1>
+<hr>
+<br>
+<p class="about-text-why">
+    We create an artificial intelligence tool that detect the Parkinson's diseases using handwritten test simply in less than two minutes person can do a parkinson test by drawing circle,mender or spiral or record data voice 
+
+</p>
+
+</div>
+
+</div>
+
+    
+
+
+<section class="symptoms" >
+    <div  class="symptoms-title"><h1>symp<span >toms</span></h1></div>
+
+
+
+    <div class="symptoms_timeline">
+        <div class="container_symptoms left wow animate__animated animate__backInLeft">
+          <div class="content">
+            <h2>Tremor</h2>
+            <p>Tremor in hands, arms, legs, jaw, or head. Muscle stiffness,where muscle remains contracted for a long time </p>
+          </div>
+        </div>
+        <div class="container_symptoms right wow animate__animated animate__backInRight">
+          <div class="content">
+            <h2>movement</h2>
+            <p>Slowness of movement
+                Impaired balance and coordination, sometimes leading to falls</p>
+          </div>
+        </div>
+        <div class="container_symptoms left wow animate__animated animate__backInLeft">
+          <div class="content">
+            <h2>Trouble Sleeping</h2>
+            <p>
+                Do you thrash around in bed or act out dreams when you are deeply asleep? Sometimes, your spouse will notice or will want to move to another bed. Sudden movements during sleep may be a sign of Parkinson's disease.</p>
+            </div>
+        </div>
+        <div class="container_symptoms right  wow animate__animated animate__backInRight">
+          <div class="content">
+            <h2>Trouble Walking</h2>
+            <p> 
+                Do you feel stiff in your body, arms or legs? Have others noticed that your arms don’t swing like they used to when you walk? Sometimes stiffness goes away as you move. If it does not, it can be a sign of Parkinson's disease. An early sign might be stiffness or pain in your shoulder or hips.</p>
+          </div>
+        </div>
+        <div class="container_symptoms left wow animate__animated animate__backInLeftt">
+          <div class="content">
+            <h2>Depression</h2>
+            <p>Up to 50% of people with Parkinson's disease experience depression. These overwhelming and long-lasting feelings come from chemical changes in your brain.</p>
+          </div>
+        </div>
+        
+        </div>
+      </div>
+</section>
+
+
+<section>
+    
+
+    <div class="about-section ">
+        <div class="container-why wow animate__animated animate__zoomIn"  style="width: 600px;">
+            
+    <h1>Why use  <span> Parkinsons</span>Test?</h1>
+    <hr>
+    <br>
+    <p class="about-text-why">
+        Taking the test can warn you if you have common early symptoms of Parkinsons, allowing you to follow up with your doctor. Whie no specific tests currently exist to diagnose Parkinson's, it's important to start treatment early when possible.
+    </p>
+    <div class="btn-box">
+      <div >
+      <a href="https://www.ncoa.org/article/parkinsons-disease-early-signs-symptoms-and-what-to-do-when-diagnosed" target="_blank" style="padding:10px;color: aliceblue;">Read more </a>
+       </div>
+    
+    </div>
+    
+    </div>
+ 
+  
+  
+
+</section>
+
+
+
+
+    <div id="signin_signup"></div>
+        <script>
+      $(function(){
+        $("#signin_signup").load("/templates/sharedSection/signup_signin.html");
+      });
+      </script>
+     
+
+</body>
+</html>
+
+
+
+
+{% endblock %}

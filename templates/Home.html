@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>PDD</title>
+    <link rel="stylesheet" href="/static/css/Signup.css">
+
+    <link rel="stylesheet" href="/static/css/home.css">
+
+
+    <script src="https://code.jquery.com/jquery-3.6.4.min.js" integrity="sha256-oP6HI9z1XaZNBrJURtCoUT5SUnxFr8s3BzRl+cbzUq8=" crossorigin="anonymous"></script>
+<script src="https://code.jquery.com/jquery-1.10.2.js"></script>
+ 
+
+   
+</head>
+<body>
+
+
+{%extends 'Shared_part.html'%}
+
+
+
+{% block content %}
+
+
+
+   
+    <section class="home">
+        <div class="home-content">
+            <h1>Hi, Parkinsons Detection System </h1>
+            <h3>Artifical Intelligence Tool</h3>
+            <p>
+            </p>
+            <div class="btn-box">
+                <div >
+                <a href="#" onclick="clicking()">Sign Up </a>
+                 </div>
+                 <div >
+                <a href="#"  onclick="clicking_signin()">Sign In</a>
+            </div>
+            </div>
+           
+        </div>
+   
+        <video  class="img" autoplay muted  loop>
+        
+        <source
+         src="/static/madia/vector.mp4" type="video/mp4" >
+      
+        </video>
+
+
+  
+      
+   
+ 
+            <script src="/static/js/functions.js"></script>
+            <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+            <script src="https://kit.fontawesome.com/a076d05399.js"></script>
+
+
+</section>
+
+               {% if error_message %}
+     <div class="alert alert-primary" id="my-alert">
+  {{ error_message }}
+
+</div>
+    {% endif %}
+{% endblock %}
+</body>
+</html>

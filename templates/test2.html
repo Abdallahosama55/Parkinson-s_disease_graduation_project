@@ -1,0 +1,126 @@
+
+
+
+{%extends 'home-after-register.html'%}
+{% block content %}
+<body onload="voice_test()">
+<section>
+
+
+  <section id="voice_test_parkinson">
+<section class="image_test_instruction" style="color: black;">
+  <div class="ins-container">
+  <h3 >Test Steps</h3>
+  <div style="text-align: center;">
+    <i class="fa-solid fa-microphone"  id="icon_Steps" ></i>
+<h4 >Record MDVP, JITTER,NHR,RBDE</h4></div>
+
+<div style="text-align: center;">
+  <i class="fa-solid fa-microphone" id="icon_Steps"></i>
+<h4>Record Spread,HNR,DEA,PPE,D2</h4></div>
+<div style="text-align: center;">
+  <i class="fa fa-check" id="icon_Steps" aria-hidden="true"></i>
+<h4 >Get Result</h4></div>
+
+</div>
+
+
+</section>
+     <h1  class="h1-test voice-h1" style="padding-top:5%"> Voice parkinson test</h1>
+      <hr style="height:5px;width:40%;text-align: center;background-color:#00afe4; margin-top:2%;margin-left:30%; border-color:none;border:none;border-radius:30%;">
+<section class="v-test">
+
+<form method="post"  action="/predict_voice" enctype="multipart/form-data">
+  <div class="form-row m-5">
+    <div class="col-12 col-lg-2 m-2">
+      <input type="text" class="form-control" name="MDVP_FO" placeholder="MDVP:FO(HZ)">
+    </div>
+    <div class="col-12 col-lg-2 m-2">
+      <input type="text" class="form-control" name="MDVP_FHI" placeholder="MDVP:FHI(HZ)">
+    </div>
+    <div class="col-12 col-lg-2 m-2">
+      <input type="text" class="form-control" name="MDVP_FLO" placeholder="MDVP:FLO(HZ)">
+    </div>
+    <div class="col-12 col-lg-2 m-2">
+      <input type="text" class="form-control" name="MDVP_JITTER" placeholder="MDVP:JITTER(Abs)">
+    </div>
+    <div class="col-12 col-lg-2 m-2">
+      <input type="text" class="form-control" name="MDVP_JITTER_precent" placeholder="MDVP:JITTER(%)">
+    </div>
+    <div class="col-12 col-lg-2 m-2">
+      <input type="text" class="form-control" name="MDVP_RAP" placeholder="MDVP:RAP">
+    </div>
+    <div class="col-12 col-lg-2 m-2">
+      <input type="text" class="form-control" name="MDVP_PPQ" placeholder="MDVP:PPQ">
+    </div>
+    <div class="col-12 col-lg-2 m-2">
+      <input type="text" class="form-control" name="jitter_DDP" placeholder="jitter:DDP">
+    </div>
+    <div class="col-12 col-lg-2 m-2">
+      <input type="text" class="form-control" name="MDVP_shimmer" placeholder="MDVP:shimmer">
+    </div>
+    <div class="col-12 col-lg-2 m-2">
+      <input type="text" class="form-control" name="MDVP_shimmer_db" placeholder="MDVP:shimmer(db)">
+    </div>
+    <div class="col-12 col-lg-2 m-2">
+      <input type="text" class="form-control"  name="shimmer_APQ3" placeholder="shimmer:APQ3">
+    </div>
+    <div class="col-12 col-lg-2 m-2">
+      <input type="text" class="form-control" name="shimmer_APQ5" placeholder="shimmer:APQ5">
+    </div>
+    <div class="col-12 col-lg-2 m-2">
+      <input type="text" class="form-control" name="shimmer_APQ11" placeholder="shimmer:APQ11">
+    </div>
+    <div class="col-12 col-lg-2 m-2">
+      <input type="text" class="form-control" name="shimmer_DDA" placeholder="shimmer:DDA">
+    </div>
+    <div class="col-12 col-lg-2 m-2">
+      <input type="text" class="form-control" name="shimmer_NHR" placeholder="shimmer:NHR">
+    </div>
+    <div class="col-12 col-lg-2 m-2">
+      <input type="text" class="form-control" name="HNR" placeholder="HNR">
+    </div>
+    <div class="col-12 col-lg-2 m-2">
+      <input type="text" class="form-control" name="RBDE" placeholder="RBDE">
+    </div>
+    <div class="col-12 col-lg-2 m-2">
+      <input type="text" class="form-control" name="DFA" placeholder="DFA">
+    </div>
+    <div class="col-12 col-lg-2 m-2">
+      <input type="text" class="form-control" name="Spread1" placeholder="Spread1">
+    </div>
+    <div class="col-12 col-lg-2 m-2">
+      <input type="text" class="form-control" name="Spread2" placeholder="Spread2">
+    </div>
+    <div class="col-12 col-lg-2 m-2">
+      <input type="text" class="form-control" name="D2" placeholder="D2">
+    </div>
+      <div class="col-12 col-lg-2 m-2">
+      <input type="text" class="form-control"  name="PPE" placeholder="PPE">
+    </div>
+  </div>
+  <div class="text-center">
+  <button type="submit" class="btn btn-primary mx-auto">Check</button>
+</div>
+</form>
+
+      <h1>{{prediction2}}</h1>
+</section>
+</section>
+
+
+
+<script src="static/js/test.js"></script>
+<script src="static/js/functions.js"></script>
+
+
+
+
+
+  </body>
+
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 320"><path fill="#273036" fill-opacity="1" d="M0,288L48,256C96,224,192,160,288,160C384,160,480,224,576,240C672,256,768,224,864,197.3C960,171,1056,149,1152,138.7C1248,128,1344,128,1392,128L1440,128L1440,320L1392,320C1344,320,1248,320,1152,320C1056,320,960,320,864,320C768,320,672,320,576,320C480,320,384,320,288,320C192,320,96,320,48,320L0,320Z"></path></svg>
+{% endblock content %}
+
+
+

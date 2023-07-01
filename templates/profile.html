@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>Profile user</title>
+	<meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
+	<link rel="stylesheet" type="text/css" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
+	<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+	
+	<link rel="stylesheet" type="text/css" href="/static/css/home.css">
+	<link rel="stylesheet" type="text/css" href="/static/css/profile.css">
+</head>
+<body>
+	
+
+<!--Navigation bar-->
+<div id="nav-placeholder">
+
+</div>
+
+{%extends 'nav-after-register.html'%}
+
+
+
+{% block content %}
+
+
+
+
+
+		<div class="row" >
+			<div class="col-sm-8 offset-sm-2 col-md-6 offset-md-3 col-lg-8 offset-lg-2 mb-sm-3 " style="margin-top:12%;">
+				<div class="profile-card card rounded-lg shadow p-4 p-xl-5 mb-4 text-center  overflow-hidden">
+					<div class="banner"></div>
+					<img src="/static/madia/userr.png" alt="" class="img-circle mx-auto mb-3">
+					<h3 class="mb-4 ">{{curr_user.firstname}} {{curr_user.lastname}}</h3>
+
+					<div class="text-left mb-4">
+						<p class="mb-2 text-center"><i class="fa fa-envelope mr-2 "></i> {{curr_user.email}}</p>
+
+
+						<p class="mb-2 text-center"><i class="fa fa-phone mr-2"></i>{{curr_user.phonenumber}}</p>
+
+
+						<p class="mb-2 text-center"><i class="fa fa-calendar mr-2"></i>{{curr_user.date}}</p>
+						<p class="mb-2 text-center "><i class="fa fa-user mr-2"></i> {{curr_user.gender}}</p>
+
+					</div>
+
+				</div>
+			</div>
+		</div>
+
+	</div>
+</section>
+	<section class="main-content">
+		<div class="container">
+			<h1 class="text-center">Previous Result</h1>
+			<br>
+			<br>
+
+			<table class="table">
+				<thead>
+					<tr>
+						<th>Image</th>
+						<th>ID</th>
+						<th>Case</th>
+
+
+						<th>Delete</th>
+
+					</tr>
+				</thead>
+				<tbody>
+					{% set count = namespace(value=1) %}
+					{% for res in results %}
+					<tr>
+						<td>
+							<div class="user-info">
+								<div class="user-info__img">
+									<img src="data:image/png;base64,{{res[0]}}" alt="User Img">
+								</div>
+								<div class="user-info__basic">
+									<h5 class="mb-0">Image test</h5>
+									<p class="text-muted mb-0">parkinson's disease detection</p>
+								</div>
+							</div>
+						</td>
+
+						<td>{{ count.value }}</td>
+						{% set count.value = count.value + 1 %}
+						<td>
+							{% if res[1]=='Healthy' %}
+							<span class="active-circle bg-success"></span> {{res[1]}}
+							{% else %}
+							<span class="active-circle bg-danger"></span> {{res[1]}}
+							{% endif %}
+						</td>
+
+						<td>
+							<button class="btn btn-dark btn-sm"  >Delete</button>
+						</td>
+
+					</tr>
+					{% endfor %}
+					<!-- <tr>
+						<td>
+							<div class="user-info">
+								<div class="user-info__img">
+									<img src="/static/madia/2.jpg" alt="User Img">
+								</div>
+								<div class="user-info__basic">
+									<h5 class="mb-0">Image test</h5>
+									<p class="text-muted mb-0">parkinson's disease detection</p>
+								</div>
+							</div>
+						</td>
+						<td>2</td>
+						<td>
+							<span class="active-circle bg-danger"></span> healthy
+						</td>
+
+
+						<td>
+							<button class="btn btn-dark btn-sm">Delete</button>
+						</td>
+
+					</tr>
+					<tr>
+						<td>
+							<div class="user-info">
+								<div class="user-info__img">
+									<img src="/static/madia/1.jpg" alt="test Img">
+								</div>
+								<div class="user-info__basic">
+									<h5 class="mb-0">Image Test</h5>
+									<p class="text-muted mb-0">parkinson's disease detection</p>
+								</div>
+							</div>
+						</td>
+						<td>
+							3
+						</td>
+
+						<td>
+							<span class="active-circle bg-success"></span> parkinson
+						</td>
+
+						<td>
+							<button class="btn btn-dark btn-sm">Delete</button>
+						</td>
+
+					</tr>
+					<tr>
+						<td>
+							<div class="user-info">
+								<div class="user-info__img">
+									<img src="/static/madia/4.jpg" alt="User Img">
+								</div>
+								<div class="user-info__basic">
+									<h5 class="mb-0">Image test</h5>
+									<p class="text-muted mb-0">parkinson's disease detection</p>
+								</div>
+							</div>
+						</td>
+						<td>4</td>
+						<td>
+							<span class="active-circle bg-danger"></span> parkinson
+						</td>
+
+						<td>
+							<button class="btn btn-dark btn-sm">Delete</button>
+						</td>
+
+					</tr> -->
+				</tbody>
+			</table>
+		</div>
+	</section>
+
+
+	
+	<script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"></script>
+	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
+</body>
+</html>
+
+
+{% endblock  %}
