@@ -133,7 +133,10 @@ document.getElementById("signup").style.display="none"
 document.getElementById("container-about").style.display="none"
 
 }
-
+function btn_del(count) {
+    var row = document.getElementById('row-' + count);
+    row.parentNode.removeChild(row);
+}
 function clicking_close_in(){
 
     document.getElementById("signin").style.display="none"

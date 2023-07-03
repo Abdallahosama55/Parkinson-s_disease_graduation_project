@@ -10,7 +10,6 @@ from PIL import Image
 import base64
 import numpy as np
 import joblib
-
 import pandas as pd
 import numpy as np
 from xgboost import XGBClassifier
@@ -283,48 +282,64 @@ def profile():
 
 ###############voice test Deployment##############################################################################
 # Load the trained model and any required preprocessing steps
+import joblib
+from sklearn.preprocessing import MinMaxScaler
+from sklearn.decomposition import PCA
+from imblearn.over_sampling import RandomOverSampler
+import pandas as pd
+import numpy as np
 
 # Load the saved objects
-ros = joblib.load('ros.joblib')
-sc = joblib.load('scaler.joblib')
-pca = joblib.load('pca.joblib')
-model = joblib.load('model.pkl')
+# Load the trained model and any required preprocessing steps
+model = joblib.load("model.pkl")
+scaler = joblib.load("scaler.joblib")
+pca=joblib.load("pca.joblib")
+
 @app.route("/predict_voice", methods=["POST"])
 def predict():
     # Get the input data from the form
-    MDVP_FO= request.form["MDVP_FO"]
-    MDVP_FHI= request.form["MDVP_FHI"]
-    MDVP_FLO = request.form["MDVP_FLO"]
-    MDVP_JITTER= request.form["MDVP_JITTER"]
-    MDVP_JITTER_precent= request.form["MDVP_JITTER_precent"]
-    MDVP_RAP= request.form["MDVP_RAP"]
-    MDVP_PPQ= request.form["MDVP_PPQ"]
-    jitter_DDP=request.form["jitter_DDP"]
-    MDVP_shimmer= request.form["MDVP_shimmer"]
-    MDVP_shimmer_db =request.form["MDVP_shimmer_db"]
-    shimmer_APQ3= request.form["shimmer_APQ3"]
-    shimmer_APQ5= request.form["shimmer_APQ5"]
-    shimmer_APQ11=request.form["shimmer_APQ11"]
-    shimmer_DDA= request.form["shimmer_DDA"]
-    shimmer_NHR= request.form["shimmer_NHR"]
-    HNR= request.form["HNR"]
-    RBDE =request.form["RBDE"]
-    DFA= request.form["DFA"]
-    Spread1= request.form["Spread1"]
-    Spread2 = request.form["Spread2"]
-    D2= request.form["D2"]
-    PPE= request.form["PPE"]
+    MDVP_FO= float(request.form["MDVP_FO"])
+    MDVP_FHI= float(request.form["MDVP_FHI"])
+    MDVP_FLO = float(request.form["MDVP_FLO"])
+    MDVP_JITTER= float(request.form["MDVP_JITTER"])
+    MDVP_JITTER_precent= float(request.form["MDVP_JITTER_precent"])
+    MDVP_RAP= float(request.form["MDVP_RAP"])
+    MDVP_PPQ= float(request.form["MDVP_PPQ"])
+    jitter_DDP=float(request.form["jitter_DDP"])
+    MDVP_shimmer= float(request.form["MDVP_shimmer"])
+    MDVP_shimmer_db =float(request.form["MDVP_shimmer_db"])
+    shimmer_APQ3= float(request.form["shimmer_APQ3"])
+    shimmer_APQ5= float(request.form["shimmer_APQ5"])
+    shimmer_APQ11=float(request.form["shimmer_APQ11"])
+    shimmer_DDA= float(request.form["shimmer_DDA"])
+    shimmer_NHR= float(request.form["shimmer_NHR"])
+    HNR= float(request.form["HNR"])
+    RBDE =float(request.form["RBDE"])
+    DFA= float(request.form["DFA"])
+    Spread1= float(request.form["Spread1"])
+    Spread2 = float(request.form["Spread2"])
+    D2= float(request.form["D2"])
+    PPE= float(request.form["PPE"])
 
     # Preprocess the input data using the same steps as during training
     input_data = np.array([[MDVP_FO, MDVP_FHI, MDVP_FLO, MDVP_JITTER, MDVP_JITTER_precent,MDVP_RAP,MDVP_PPQ,jitter_DDP,MDVP_shimmer,MDVP_shimmer_db,shimmer_APQ3,shimmer_APQ5,shimmer_APQ11,shimmer_DDA,shimmer_NHR,HNR,RBDE,DFA,Spread1,Spread2,D2,PPE]])
-    x_resampled, _ = ros.fit_resample(input_data, np.ones(input_data.shape[0]))
-    x_scaled = scaler.fit_transform(x_resampled)
-    x_pca = pca.fit_transform(x_scaled)
+
+    x_scaled = scaler.transform(input_data)
+
+
+    x_pca = pca.transform(X=x_scaled)
 
     # Use the trained model to make predictions on the preprocessed input data
-    prediction2 = model.predict(x_pca)[0]
+    prediction2 =model.predict(x_pca)
+
+    # Convert the prediction to a string and return it
+    if prediction2[0] == 1:
+        return render_template('test2.html', prediction2='Parkinson\'s disease')
+    else:
+        return render_template('test2.html', prediction2='no Parkinson\'s disease')
+
 
     # Convert the prediction to a JSON object and return it
-    return render_template("test2.html",prediction2=prediction2)
+
 if __name__ == '__main__':
     app.run(debug=True)

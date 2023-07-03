@@ -56,6 +56,7 @@
 	<section class="main-content">
 		<div class="container">
 			<h1 class="text-center">Previous Result</h1>
+			<hr>
 			<br>
 			<br>
 
@@ -67,14 +68,16 @@
 						<th>Case</th>
 
 
-						<th>Delete</th>
+						<th>Hide</th>
 
 					</tr>
 				</thead>
 				<tbody>
 					{% set count = namespace(value=1) %}
+					{% set c = namespace(value=1) %}
 					{% for res in results %}
-					<tr>
+					<tr id="row-{{c.value}}">
+
 						<td>
 							<div class="user-info">
 								<div class="user-info__img">
@@ -98,88 +101,122 @@
 						</td>
 
 						<td>
-							<button class="btn btn-dark btn-sm"  >Delete</button>
+							<button class="btn btn-dark btn-sm btn-del"  onclick="btn_del({{c.value}})"  >Hide</button>
 						</td>
 
 					</tr>
 					{% endfor %}
-					<!-- <tr>
+
+				</tbody>
+			</table>
+		</div>
+
+<div class="container container2">
+		<table class="table">
+				<thead>
+					<tr>
+						<th>MDVP Test</th>
+						<th>MDVP:FO(HZ)</th>
+						<th>JITTER(%)</th>
+                        <th>shimmer(db)</th>
+
+                         <th>Case</th>
+						<th>Hide</th>
+
+					</tr>
+				</thead>
+			<tbody>
+			 <tr>
 						<td>
 							<div class="user-info">
-								<div class="user-info__img">
-									<img src="/static/madia/2.jpg" alt="User Img">
-								</div>
+
 								<div class="user-info__basic">
-									<h5 class="mb-0">Image test</h5>
+									<h6 class="mb-0">MDVP Test1</h6>
 									<p class="text-muted mb-0">parkinson's disease detection</p>
 								</div>
 							</div>
 						</td>
 						<td>2</td>
 						<td>
-							<span class="active-circle bg-danger"></span> healthy
+							<span >1.8</span>
+						</td>
+				 	<td>
+							<span>0.3</span>
 						</td>
 
 
+                           <td>
+							<span class="active-circle bg-success"></span> Healthy
+						</td>
+
 						<td>
-							<button class="btn btn-dark btn-sm">Delete</button>
+							<button class="btn btn-dark btn-sm">Hide</button>
+						</td>
+
+					</tr>
+				<tr>
+						<td>
+							<div class="user-info">
+
+								<div class="user-info__basic">
+									<h6 class="mb-0">MDVP Test2</h6>
+									<p class="text-muted mb-0">parkinson's disease detection</p>
+								</div>
+							</div>
+						</td>
+						<td>3</td>
+						<td>
+							<span >-0.4</span>
+						</td>
+				 	<td>
+							<span>0.8</span>
+						</td>
+
+
+                           <td>
+							<span class="active-circle bg-danger"></span> Parkinson
+						</td>
+
+						<td>
+							<button class="btn btn-dark btn-sm">Hide</button>
 						</td>
 
 					</tr>
 					<tr>
 						<td>
 							<div class="user-info">
-								<div class="user-info__img">
-									<img src="/static/madia/1.jpg" alt="test Img">
-								</div>
+
 								<div class="user-info__basic">
-									<h5 class="mb-0">Image Test</h5>
+									<h6 class="mb-0">MDVP Test3</h6>
 									<p class="text-muted mb-0">parkinson's disease detection</p>
 								</div>
 							</div>
 						</td>
+						<td>2</td>
 						<td>
-							3
+							<span >-0.5</span>
+						</td>
+				 	<td>
+							<span>0.1</span>
+						</td>
+
+
+                           <td>
+							<span class="active-circle bg-success"></span> Healthy
 						</td>
 
 						<td>
-							<span class="active-circle bg-success"></span> parkinson
-						</td>
-
-						<td>
-							<button class="btn btn-dark btn-sm">Delete</button>
+							<button class="btn btn-dark btn-sm">Hide</button>
 						</td>
 
 					</tr>
-					<tr>
-						<td>
-							<div class="user-info">
-								<div class="user-info__img">
-									<img src="/static/madia/4.jpg" alt="User Img">
-								</div>
-								<div class="user-info__basic">
-									<h5 class="mb-0">Image test</h5>
-									<p class="text-muted mb-0">parkinson's disease detection</p>
-								</div>
-							</div>
-						</td>
-						<td>4</td>
-						<td>
-							<span class="active-circle bg-danger"></span> parkinson
-						</td>
-
-						<td>
-							<button class="btn btn-dark btn-sm">Delete</button>
-						</td>
-
-					</tr> -->
-				</tbody>
-			</table>
-		</div>
+			</tbody>
+		</table>
+</div>
 	</section>
 
 
-	
+ <script src="/static/js/functions.js"></script>
 	<script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"></script>
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"></script>
 	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
