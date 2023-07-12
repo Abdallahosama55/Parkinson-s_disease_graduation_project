@@ -1,6 +1,15 @@
 gunicorn
 flask
-tensorflow==2.3.0
+tensorflow
 pillow
 numpy
-protobuf==3.20.*
+keras
+flask_sqlalchemy
+jwt
+flask_login
+datetime
+flask_migrate
+pandas
+joblib
+scikit-learn==1.2.2
+xgboost

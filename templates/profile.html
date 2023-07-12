@@ -6,12 +6,12 @@
 	<meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
 	<link rel="stylesheet" type="text/css" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
 	<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
-	
+
 	<link rel="stylesheet" type="text/css" href="/static/css/home.css">
 	<link rel="stylesheet" type="text/css" href="/static/css/profile.css">
 </head>
 <body>
-	
+
 
 <!--Navigation bar-->
 <div id="nav-placeholder">
@@ -75,7 +75,7 @@
 				<tbody>
 					{% set count = namespace(value=1) %}
 					{% set c = namespace(value=1) %}
-					{% for res in results %}
+					{% for res in image_results %}
 					<tr id="row-{{c.value}}">
 
 						<td>
@@ -110,8 +110,7 @@
 				</tbody>
 			</table>
 		</div>
-
-<div class="container container2">
+	<div class="container container2">
 		<table class="table">
 				<thead>
 					<tr>
@@ -126,27 +125,34 @@
 					</tr>
 				</thead>
 			<tbody>
+			 {% set count = namespace(value=1) %}
+			 {% for res in voice_results %}
 			 <tr>
 						<td>
 							<div class="user-info">
 
 								<div class="user-info__basic">
-									<h6 class="mb-0">MDVP Test1</h6>
+									<h6 class="mb-0">MDVP Test {{ count.value }}</h6>
+									{% set count.value = count.value + 1 %}
 									<p class="text-muted mb-0">parkinson's disease detection</p>
 								</div>
 							</div>
 						</td>
-						<td>2</td>
+						<td>{{res[0]}}</td>
 						<td>
-							<span >1.8</span>
+							<span >{{res[1]}}</span>
 						</td>
 				 	<td>
-							<span>0.3</span>
+							<span>{{res[2]}}</span>
 						</td>
 
 
-                           <td>
-							<span class="active-circle bg-success"></span> Healthy
+						<td>
+							{% if res[3]=='Healthy' %}
+							<span class="active-circle bg-success"></span> {{ res[3] }}
+							{% else %}
+							<span class="active-circle bg-danger"></span> {{res[3]}}
+							{% endif %}
 						</td>
 
 						<td>
@@ -154,71 +160,21 @@
 						</td>
 
 					</tr>
-				<tr>
-						<td>
-							<div class="user-info">
 
-								<div class="user-info__basic">
-									<h6 class="mb-0">MDVP Test2</h6>
-									<p class="text-muted mb-0">parkinson's disease detection</p>
-								</div>
-							</div>
-						</td>
-						<td>3</td>
-						<td>
-							<span >-0.4</span>
-						</td>
-				 	<td>
-							<span>0.8</span>
-						</td>
-
-
-                           <td>
-							<span class="active-circle bg-danger"></span> Parkinson
-						</td>
-
-						<td>
-							<button class="btn btn-dark btn-sm">Hide</button>
-						</td>
-
-					</tr>
-					<tr>
-						<td>
-							<div class="user-info">
-
-								<div class="user-info__basic">
-									<h6 class="mb-0">MDVP Test3</h6>
-									<p class="text-muted mb-0">parkinson's disease detection</p>
-								</div>
-							</div>
-						</td>
-						<td>2</td>
-						<td>
-							<span >-0.5</span>
-						</td>
-				 	<td>
-							<span>0.1</span>
-						</td>
-
-
-                           <td>
-							<span class="active-circle bg-success"></span> Healthy
-						</td>
-
-						<td>
-							<button class="btn btn-dark btn-sm">Hide</button>
-						</td>
-
-					</tr>
 			</tbody>
+			{% endfor %}
 		</table>
 </div>
 	</section>
+<script>
 
 
+
+
+</script>
+ <script src="/static/js/jquery.js"></script>
  <script src="/static/js/functions.js"></script>
-	<script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"></script>
-	<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"></script>
+
 	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
 </body>
 </html>

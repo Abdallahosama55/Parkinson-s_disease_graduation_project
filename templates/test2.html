@@ -3,7 +3,7 @@
 
 {%extends 'home-after-register.html'%}
 {% block content %}
-<body onload="voice_test()">
+<body onload="voicetest()">
 <section>
 
 
@@ -30,19 +30,19 @@
       <hr style="height:5px;width:40%;text-align: center;background-color:#00afe4; margin-top:2%;margin-left:30%; border-color:none;border:none;border-radius:30%;">
 <section class="v-test">
 
-<form method="post"  action="/predict_voice" enctype="multipart/form-data">
+<form method="post"  action="" enctype="multipart/form-data">
   <div class="form-row m-5">
     <div class="col-12 col-lg-2 m-2">
-      <input type="text" class="form-control" name="MDVP_FO" placeholder="MDVP:FO(HZ)">
+      <input type="text" class="form-control" name="MDVP_FO" placeholder="MDVP:FO(HZ)" required>
     </div>
     <div class="col-12 col-lg-2 m-2">
-      <input type="text" class="form-control" name="MDVP_FHI" placeholder="MDVP:FHI(HZ)">
+      <input type="text" class="form-control" name="MDVP_FHI" placeholder="MDVP:FHI(HZ)" required>
     </div>
     <div class="col-12 col-lg-2 m-2">
-      <input type="text" class="form-control" name="MDVP_FLO" placeholder="MDVP:FLO(HZ)">
+      <input type="text" class="form-control" name="MDVP_FLO" placeholder="MDVP:FLO(HZ)" required>
     </div>
     <div class="col-12 col-lg-2 m-2">
-      <input type="text" class="form-control" name="MDVP_JITTER" placeholder="MDVP:JITTER(Abs)">
+      <input type="text" class="form-control" name="MDVP_JITTER" placeholder="MDVP:JITTER(Abs)" required>
     </div>
     <div class="col-12 col-lg-2 m-2">
       <input type="text" class="form-control" name="MDVP_JITTER_precent" placeholder="MDVP:JITTER(%)">
@@ -100,11 +100,11 @@
     </div>
   </div>
   <div class="text-center">
-  <button type="submit" class="btn btn-primary mx-auto">Check</button>
+  <input type="submit" class="btn btn-primary mx-auto">Check</input>
 </div>
 </form>
 
-      <h1 style="color: red">{{prediction2}}</h1>
+
 </section>
 </section>
 

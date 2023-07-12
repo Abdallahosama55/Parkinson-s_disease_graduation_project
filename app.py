@@ -12,7 +12,6 @@ import numpy as np
 import joblib
 import pandas as pd
 import numpy as np
-from xgboost import XGBClassifier
 app = Flask(__name__)
 
 global auth
@@ -36,7 +35,7 @@ def load_user(id):
 @app.route('/')
 def home():
 
-    return render_template('Home.html',user=current_user)
+    return render_template('Home.html')
 
 
 @app.route('/home_after_register')
@@ -53,7 +52,7 @@ def voice_test():
 @app.route('/home_after_register_image')
 def home_after_register_image():
 
-    return render_template('nav-after-register.html')
+    return render_template('nav-after-register.html',user=current_user)
 
 
 
@@ -70,16 +69,44 @@ class User(db.Model,UserMixin):
     password = db.Column(db.String(16), nullable=False)
     Test = db.relationship('Test', backref='owned_User', lazy=True)
 
-
 class Test(db.Model):
     __tablename__ = 'test'
     test_id = db.Column(db.Integer(), primary_key=True)
     image = db.Column(db.Text(30), nullable=False)
     result = db.Column(db.Text(30), nullable=False)
-    id= db.Column(db.Integer, db.ForeignKey('user.id'))
+    id = db.Column(db.Integer, db.ForeignKey('user.id'))
+    user = db.relationship('User', backref=db.backref('tests', lazy=True, cascade='all, delete-orphan'))
 
+class voice_test(db.Model):
+    __tablename__ = 'voice_test'
+    test_id = db.Column(db.Integer, primary_key=True)
+    MDVP_FO = db.Column(db.String(1000), nullable=False)
+    MDVP_FHI = db.Column(db.String(1000), nullable=False)
+    MDVP_FLO = db.Column(db.String(1000), nullable=False)
+    MDVP_JITTER = db.Column(db.String(1000), nullable=False)
+    MDVP_JITTER_precent = db.Column(db.String(1000), nullable=False)
+    MDVP_RAP = db.Column(db.String(1000), nullable=False)
+    MDVP_PPQ = db.Column(db.String(1000), nullable=False)
+    jitter_DDP = db.Column(db.String(1000), nullable=False)
+    MDVP_shimmer = db.Column(db.String(1000), nullable=False)
+    MDVP_shimmer_db = db.Column(db.String(1000), nullable=False)
+    shimmer_APQ3 = db.Column(db.String(1000), nullable=False)
+    shimmer_APQ5 = db.Column(db.String(1000), nullable=False)
+    shimmer_APQ11 = db.Column(db.String(1000), nullable=False)
+    shimmer_DDA = db.Column(db.String(1000), nullable=False)
+    shimmer_NHR = db.Column(db.String(1000), nullable=False)
+    HNR = db.Column(db.String(1000), nullable=False)
+    RBDE = db.Column(db.String(1000), nullable=False)
+    DFA = db.Column(db.String(1000), nullable=False)
+    Spread1 = db.Column(db.String(1000), nullable=False)
+    Spread2 = db.Column(db.String(1000), nullable=False)
+    D2 = db.Column(db.String(1000), nullable=False)
+    PPE = db.Column(db.String(1000), nullable=False)
+    result = db.Column(db.String(40), default=None)
+    id = db.Column(db.Integer, db.ForeignKey('user.id'))
 
-
+    def __repr__(self):
+        return '<voice_test %r>' % self.test_id
 
 class Token(db.Model):
         __tablename__ = 'token'
@@ -88,6 +115,11 @@ class Token(db.Model):
         token = db.Column(db.Text(1000), nullable=False)
         isdeleted = db.Column(db.Boolean(), nullable=False)
         id = db.Column(db.Integer, db.ForeignKey('user.id', name='fk_token_user_id'))
+
+
+
+
+
 
 import jwt
 from sqlalchemy.exc import IntegrityError  # import IntegrityError
@@ -104,7 +136,7 @@ def register_user():
 
     try:
         # use the retrieved values to create a new user and add it to the database
-        hashed_password = generate_password_hash(password, method='pbkdf2:sha1')
+        hashed_password = generate_password_hash(password, method='scrypt')
         usernew = User(firstname=firstname, lastname=lastname, phonenumber=phonenumber, gender=gender, date=date,
                     username=username, email=email, password=hashed_password)
         login_user(usernew,remember=True)
@@ -163,7 +195,7 @@ def signin():
     global auth
     auth=True
     # return the token to the client
-    return make_response(render_template('home-after-register.html', auth=auth,user=current_user))
+    return make_response(render_template('home-after-register.html', auth=auth,user=current_user,token=tokeninstance))
 from functools import wraps
 def token_required(f):
     @wraps(f)
@@ -213,8 +245,8 @@ def contact():
 def about_tool():
     return render_template('about-tool.html',auth=auth)
 
-
 #########################################Deployment#################################################################
+
 def preprossing(image):
     image=Image.open(image)
     image = image.resize((224, 224))
@@ -223,12 +255,12 @@ def preprossing(image):
     return image_arr
 
 classes = ['Healthy','Parkinson']
-model=load_model("weights_best.hdf5")
+model1=load_model("weights_best.hdf5")
 
 def predict(image):
     image_arr= preprossing(image)
     print("Image preprocessed")
-    result = model.predict(image_arr)
+    result = model1.predict(image_arr)
     print("Prediction result:", result)
     ind = np.argmax(result)
     prediction = classes[ind]
@@ -238,8 +270,8 @@ def predict(image):
 
 
 @app.route('/image_test', methods=['GET', 'POST'])
-@login_required
 def image_test():
+
     flag = 'hand-written'
     title = 'Hand-written Test'
     if request.method == 'POST':
@@ -262,84 +294,104 @@ def image_test():
 
     else:
         print('out')
-        return render_template('test.html')
+        return render_template('test.html', user=current_user, title=title, flag=flag)
+
+
+def predict_voice(MDVP_FO, MDVP_FHI, MDVP_FLO, MDVP_JITTER, MDVP_JITTER_precent, MDVP_RAP, MDVP_PPQ,
+                  jitter_DDP, MDVP_shimmer, MDVP_shimmer_db, shimmer_APQ3, shimmer_APQ5, shimmer_APQ11,
+                  shimmer_DDA, shimmer_NHR, HNR, RBDE, DFA, Spread1, Spread2, D2, PPE):
+    model = joblib.load("model.pkl")
+    scaler = joblib.load("scaler.joblib")
+    pca = joblib.load("pca.joblib")
+    # Preprocess the input data using the same steps as during training
+    input_data = np.array([[MDVP_FO, MDVP_FHI, MDVP_FLO, MDVP_JITTER, MDVP_JITTER_precent, MDVP_RAP, MDVP_PPQ,
+                            jitter_DDP, MDVP_shimmer, MDVP_shimmer_db, shimmer_APQ3, shimmer_APQ5, shimmer_APQ11,
+                            shimmer_DDA, shimmer_NHR, HNR, RBDE, DFA, Spread1, Spread2, D2, PPE]])
+    x_scaled = scaler.transform(input_data)
+    x_pca = pca.transform(X=x_scaled)
+    # Use the trained model to make predictions on the preprocessed input data
+    prediction = model.predict(x_pca)
+    ind = np.argmax(prediction)
+    prediction = classes[ind]
+    print("Prediction:", prediction)
+    return prediction
+
+
+@app.route('/voice_test', methods=['GET', 'POST'])
+def voicetest():
+    flag = 'voiceTest'
+    title = 'Voice-Test'
+    if request.method == 'POST':
+        # Get the input data from the form
+        MDVP_FO = float(request.form["MDVP_FO"])
+        MDVP_FHI = float(request.form["MDVP_FHI"])
+        MDVP_FLO = float(request.form["MDVP_FLO"])
+        MDVP_JITTER = float(request.form["MDVP_JITTER"])
+        MDVP_JITTER_precent = float(request.form["MDVP_JITTER_precent"])
+        MDVP_RAP = float(request.form["MDVP_RAP"])
+        MDVP_PPQ = float(request.form["MDVP_PPQ"])
+        jitter_DDP = float(request.form["jitter_DDP"])
+        MDVP_shimmer = float(request.form["MDVP_shimmer"])
+        MDVP_shimmer_db = float(request.form["MDVP_shimmer_db"])
+        shimmer_APQ3 = float(request.form["shimmer_APQ3"])
+        shimmer_APQ5 = float(request.form["shimmer_APQ5"])
+        shimmer_APQ11 = float(request.form["shimmer_APQ11"])
+        shimmer_DDA = float(request.form["shimmer_DDA"])
+        shimmer_NHR = float(request.form["shimmer_NHR"])
+        HNR = float(request.form["HNR"])
+        RBDE = float(request.form["RBDE"])
+        DFA = float(request.form["DFA"])
+        Spread1 = float(request.form["Spread1"])
+        Spread2 = float(request.form["Spread2"])
+        D2 = float(request.form["D2"])
+        PPE = float(request.form["PPE"])
+        new_test = voice_test(MDVP_FO=MDVP_FO, MDVP_FHI=MDVP_FHI, MDVP_FLO=MDVP_FLO, MDVP_JITTER=MDVP_JITTER,
+                              MDVP_JITTER_precent=MDVP_JITTER_precent, MDVP_RAP=MDVP_RAP, MDVP_PPQ=MDVP_PPQ,
+                              jitter_DDP=jitter_DDP, MDVP_shimmer=MDVP_shimmer, MDVP_shimmer_db=MDVP_shimmer_db
+                              , shimmer_APQ3=shimmer_APQ3, shimmer_APQ5=shimmer_APQ5, shimmer_APQ11=shimmer_APQ11,
+                              shimmer_DDA=shimmer_DDA, shimmer_NHR=shimmer_NHR, HNR=HNR, RBDE=RBDE, DFA=DFA
+                              , Spread1=Spread1, Spread2=Spread2, D2=D2, PPE=PPE, id=current_user.id)
+        db.create_all()
+        db.session.add(new_test)
+        result = predict_voice(MDVP_FO, MDVP_FHI, MDVP_FLO, MDVP_JITTER, MDVP_JITTER_precent, MDVP_RAP, MDVP_PPQ,
+                               jitter_DDP, MDVP_shimmer, MDVP_shimmer_db, shimmer_APQ3, shimmer_APQ5, shimmer_APQ11,
+                               shimmer_DDA, shimmer_NHR, HNR, RBDE, DFA, Spread1, Spread2, D2, PPE)
+        new_test.result = result
+        db.session.commit()
+        return redirect(url_for('profile'))
+    else:
+        return render_template('test2.html', user=current_user, title=title, flag=flag)
 
 
 @app.route('/profile')
 @login_required
 def profile():
+    title='profile'
     flag = 'profile'
-    results = []
+    image_results = []
+    voice_results = []
     curr_user = User.query.filter_by(id=current_user.id).first()
-    tests = Test.query.filter_by(id=current_user.id).all()
-    for test in tests:
+    imagetests = Test.query.filter_by(id=current_user.id).all()
+    voicetests = voice_test.query.filter_by(id=current_user.id).all()
+    MDVP_FO = None
+    MDVP_JITTER = None
+    MDVP_shimmer_db = None
+    for test in imagetests:
         byte = base64.b64encode(test.image).decode('utf-8')
         result = test.result
-        results.append([byte, result])
+        image_results.append([byte, result])
+    for voiceTest in voicetests:
+        MDVP_FO = voiceTest.MDVP_FO
+        MDVP_JITTER = voiceTest.MDVP_JITTER
+        MDVP_shimmer_db = voiceTest.MDVP_shimmer_db
+        result2 = voiceTest.result
+        voice_results.append([MDVP_FO, MDVP_JITTER, MDVP_shimmer_db, result2])
 
     return render_template('profile.html', user=current_user, curr_user=curr_user,
-                           results=results, flag=flag)
+                           image_results=image_results, MDVP_FO=MDVP_FO, MDVP_JITTER=MDVP_JITTER,
+                           MDVP_shimmer_db=MDVP_shimmer_db, voice_results=voice_results, flag=flag,title=title)
+#######################################################################3
 
-###############voice test Deployment##############################################################################
-# Load the trained model and any required preprocessing steps
-import joblib
-from sklearn.preprocessing import MinMaxScaler
-from sklearn.decomposition import PCA
-from imblearn.over_sampling import RandomOverSampler
-import pandas as pd
-import numpy as np
-
-# Load the saved objects
-# Load the trained model and any required preprocessing steps
-model = joblib.load("model.pkl")
-scaler = joblib.load("scaler.joblib")
-pca=joblib.load("pca.joblib")
-
-@app.route("/predict_voice", methods=["POST"])
-def predict():
-    # Get the input data from the form
-    MDVP_FO= float(request.form["MDVP_FO"])
-    MDVP_FHI= float(request.form["MDVP_FHI"])
-    MDVP_FLO = float(request.form["MDVP_FLO"])
-    MDVP_JITTER= float(request.form["MDVP_JITTER"])
-    MDVP_JITTER_precent= float(request.form["MDVP_JITTER_precent"])
-    MDVP_RAP= float(request.form["MDVP_RAP"])
-    MDVP_PPQ= float(request.form["MDVP_PPQ"])
-    jitter_DDP=float(request.form["jitter_DDP"])
-    MDVP_shimmer= float(request.form["MDVP_shimmer"])
-    MDVP_shimmer_db =float(request.form["MDVP_shimmer_db"])
-    shimmer_APQ3= float(request.form["shimmer_APQ3"])
-    shimmer_APQ5= float(request.form["shimmer_APQ5"])
-    shimmer_APQ11=float(request.form["shimmer_APQ11"])
-    shimmer_DDA= float(request.form["shimmer_DDA"])
-    shimmer_NHR= float(request.form["shimmer_NHR"])
-    HNR= float(request.form["HNR"])
-    RBDE =float(request.form["RBDE"])
-    DFA= float(request.form["DFA"])
-    Spread1= float(request.form["Spread1"])
-    Spread2 = float(request.form["Spread2"])
-    D2= float(request.form["D2"])
-    PPE= float(request.form["PPE"])
-
-    # Preprocess the input data using the same steps as during training
-    input_data = np.array([[MDVP_FO, MDVP_FHI, MDVP_FLO, MDVP_JITTER, MDVP_JITTER_precent,MDVP_RAP,MDVP_PPQ,jitter_DDP,MDVP_shimmer,MDVP_shimmer_db,shimmer_APQ3,shimmer_APQ5,shimmer_APQ11,shimmer_DDA,shimmer_NHR,HNR,RBDE,DFA,Spread1,Spread2,D2,PPE]])
-
-    x_scaled = scaler.transform(input_data)
-
-
-    x_pca = pca.transform(X=x_scaled)
-
-    # Use the trained model to make predictions on the preprocessed input data
-    prediction2 =model.predict(x_pca)
-
-    # Convert the prediction to a string and return it
-    if prediction2[0] == 1:
-        return render_template('test2.html', prediction2='Parkinson\'s disease')
-    else:
-        return render_template('test2.html', prediction2='no Parkinson\'s disease')
-
-
-    # Convert the prediction to a JSON object and return it
 
 if __name__ == '__main__':
     app.run(debug=True)
